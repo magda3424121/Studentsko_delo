@@ -1,53 +1,29 @@
 using Microsoft.EntityFrameworkCore;
 using Studentski_servis.Data;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. REGISTRACIJA BAZE (To je manjkalo!)
+// 1. Povezava z bazo
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Dodajanje osnovnih servisov
-builder.Services.AddControllers(); // Pomembno za kasnejše API kontrolerje
-builder.Services.AddOpenApi();
+// 2. Dodajanje vseh potrebnih servisov
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer(); // Nujno za prepoznavo poti
+builder.Services.AddOpenApi();              // Za .NET 9/10 dokumentacijo
 
 var app = builder.Build();
 
-// 2. KONFIGURACIJA CEVOVODA (Pipeline)
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+// 3. Omogoči Scalar in OpenAPI (brez "if" pogoja, da bo 100% delalo)
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.UseHttpsRedirection();
-app.UseAuthorization(); // Vedno dobro imeti, tudi če še nimaš prijave
-
-// Mapiranje kontrolerjev (to boš potrebovala za CRUD)
+app.UseAuthorization();
 app.MapControllers();
 
-// Spodaj pustiva tvoj testni WeatherForecast primer
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+// 4. Testna pot, da takoj vidiš, če API sploh "živi"
+app.MapGet("/", () => "API deluje! Pojdi na /scalar/v1 za vmesnik.");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
