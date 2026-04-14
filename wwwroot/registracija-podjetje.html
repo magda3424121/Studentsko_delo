@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registracija podjetja | Študentsko delo</title>
+    <style>
+        :root {
+            --primarna-modra: #1a237e;
+            --poudarek-oranza: #ff6f00;
+            --bg-svetla: #f4f7f6;
+            --text-glavni: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-svetla);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .auth-card {
+            background: white;
+            width: 100%;
+            max-width: 500px; /* Malo širše za podjetje */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--primarna-modra);
+            text-align: center;
+        }
+
+        .logo-area img {
+            height: 70px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        h2 {
+            color: var(--primarna-modra);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .full { grid-column: span 2; }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primarna-modra);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background-color: var(--poudarek-oranza);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #e65100;
+        }
+
+        .secondary-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #777;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="logo-area">
+        <img src="/img/logo.png" onclick="window.location.href='index.html'" alt="Logo">
+    </div>
+
+    <h2>Registracija podjetja</h2>
+
+    <div class="form-grid">
+        <div class="form-group full">
+            <label>Ime podjetja *</label>
+            <input type="text" id="ime" placeholder="npr. Moje Podjetje d.o.o.">
+        </div>
+
+        <div class="form-group">
+            <label>E-pošta *</label>
+            <input type="email" id="mail" placeholder="info@podjetje.si">
+        </div>
+
+        <div class="form-group">
+            <label>Telefon *</label>
+            <input type="text" id="telefon" placeholder="041 123 456">
+        </div>
+
+        <div class="form-group">
+            <label>Kraj podjetja *</label>
+            <select id="kraji_id">
+                <option value="">Nalaganje krajev...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Spletna stran</label>
+            <input type="text" id="spletna_stran" placeholder="www.podjetje.si">
+        </div>
+
+        <div class="form-group full">
+            <label>Opis dejavnosti</label>
+            <textarea id="opis" rows="2" placeholder="Kratek opis..."></textarea>
+        </div>
+
+        <div class="form-group full">
+            <label>Geslo za dostop *</label>
+            <input type="password" id="geslo" placeholder="Izberi varno geslo...">
+        </div>
+    </div>
+
+    <button class="btn-primary" onclick="shraniPodjetje()">Ustvari račun podjetja</button>
+
+    <a href="prijava-podjetje.html" class="secondary-link">Že imate račun? Prijavite se tukaj.</a>
+    <a href="index.html" class="secondary-link">← Nazaj na glavno stran</a>
+</div>
+
+<script>
+    // 1. Nalaganje krajev
+    document.addEventListener('DOMContentLoaded', async () => {
+        const select = document.getElementById('kraji_id');
+        try {
+            const res = await fetch('/api/Podjetje/kraji');
+            if (res.ok) {
+                const kraji = await res.json();
+                select.innerHTML = '<option value="">-- izberi kraj --</option>';
+                kraji.forEach(k => {
+                    const opt = document.createElement('option');
+                    opt.value = k.id || k.Id;
+                    opt.textContent = k.ime || k.Ime;
+                    select.appendChild(opt);
+                });
+            }
+        } catch (e) {
+            console.error("Napaka kraji:", e);
+        }
+    });
+
+    // 2. Shranjevanje podjetja
+    async function shraniPodjetje() {
+        const data = {
+            ime: document.getElementById('ime').value,
+            mail: document.getElementById('mail').value,
+            telefon: document.getElementById('telefon').value,
+            spletna_stran: document.getElementById('spletna_stran').value,
+            opis: document.getElementById('opis').value || "Brez opisa",
+            kraji_id: parseInt(document.getElementById('kraji_id').value),
+            geslo: document.getElementById('geslo').value
+        };
+
+        if (!data.ime || !data.mail || isNaN(data.kraji_id) || !data.geslo) {
+            alert("Prosim, izpolnite vsa obvezna polja (*).");
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/Podjetje/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                alert("Podjetje uspešno registrirano!");
+                window.location.href = 'prijava-podjetje.html';
+            } else {
+                const err = await res.text();
+                alert("Napaka: " + err);
+            }
+        } catch (e) {
+            alert("Povezava s strežnikom ni uspela.");
+        }
+    }
+</script>
+
+</body>
+</html>

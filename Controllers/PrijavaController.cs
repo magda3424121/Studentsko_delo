@@ -16,18 +16,15 @@ public class PrijavaController : ControllerBase
         _context = context;
     }
 
-    // Seznam vseh prijav (za administratorja)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Prijava>>> GetPrijave()
     {
         return await _context.Prijave.ToListAsync();
     }
 
-    // Nova prijava na delo
     [HttpPost]
     public async Task<ActionResult<Prijava>> PostPrijava(Prijava prijava)
     {
-        // Samodejno nastavimo trenutni datum prijave
         prijava.datum_prijave = DateTime.UtcNow;
         
         _context.Prijave.Add(prijava);

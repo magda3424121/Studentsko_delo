@@ -16,14 +16,12 @@ public class UporabnikController : ControllerBase
         _context = context;
     }
 
-    // Pridobi vse uporabnike
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Uporabnik>>> GetUporabniki()
     {
         return await _context.Uporabniki.ToListAsync();
     }
 
-    // Registracija novega uporabnika
     [HttpPost]
     public async Task<ActionResult<Uporabnik>> PostUporabnik(Uporabnik uporabnik)
     {

@@ -1,22 +1,19 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema; // <--- DODAJ TOLE
 
-namespace Studentski_servis.Models
+namespace Studentski_servis.Models;
+
+[Table("objave")] // <--- IN TOLE (pove programu, naj išče malo tabelo 'objave')
+public class Objava
 {
-    [Table("objave")]
-    public class Objava
-    {
-        [Key]
-        public int id { get; set; }
-        
-        // V SQL-u si imela 'ime' kot integer, kar je verjetno napaka. 
-        // Če si v Neonu spremenila v text, uporabi string.
-        public string ime { get; set; } = string.Empty; 
-        
-        public string opis { get; set; } = string.Empty;
-        public double placa { get; set; }
-        public string delovnik { get; set; } = string.Empty;
-        public string trajanje { get; set; } = string.Empty;
-        public int podjetja_id { get; set; }
-    }
+    [Key]
+    public int id { get; set; }
+    public string ime { get; set; } = string.Empty;
+    public string opis { get; set; } = string.Empty;
+    public double placa { get; set; }
+    public string delovnik { get; set; } = string.Empty;
+    public string trajanje { get; set; } = string.Empty;
+    public int podjetja_id { get; set; }
+    public string? lokacija { get; set; }
+    public int? kraj_id { get; set; }
 }
