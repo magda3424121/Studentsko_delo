@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nadzorna plošča za podjetja</title>
+    <style>
+        :root {
+            --primarna-oranza: #ff6f00;
+            --temna-modra: #1a237e;
+            --bg-svetla: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-svetla);
+            margin: 0;
+            display: flex;
+        }
+
+        /* Stranski meni */
+        .sidebar {
+            width: 250px;
+            background: var(--temna-modra);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding: 20px;
+        }
+
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; border-bottom: 1px solid #3f51b5; padding-bottom: 10px; }
+        
+        .nav-item {
+            padding: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover, .nav-item.active { background: var(--primarna-oranza); }
+
+        /* Glavna vsebina */
+        .main-content {
+            margin-left: 290px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        /* Obrazec za vnos */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 10px; border: 1px solid #ddd; border-radius: 6px;
+        }
+
+        .btn-add {
+            background: var(--primarna-oranza);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Tabela oglasov */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        th { background: #f8f9fa; color: var(--temna-modra); }
+
+        .btn-delete {
+            background: #ff5252;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .user-info { font-weight: bold; color: var(--temna-modra); }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>DASHBOARD</h2>
+    <div class="nav-item active">Moji oglasi</div>
+    <div class="nav-item" onclick="window.location.href='statistika-podjetja.html'">Statistika trga</div>
+    <div class="nav-item" onclick="logout()" style="margin-top: 50px; color: #ffab91;">Odjava</div>
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <h1>Pozdravljeni, <span id="company-name" class="user-info">Podjetje</span>!</h1>
+        <button class="btn-add" onclick="document.getElementById('add-modal').scrollIntoView()">+ Nov oglas</button>
+    </div>
+
+    <div class="card">
+        <h2>Vaši aktivni oglasi</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Naziv dela</th>
+                    <th>Plačilo</th>
+                    <th>Lokacija</th>
+                    <th>Prijave</th>
+                    <th>Akcije</th>
+                </tr>
+            </thead>
+            <tbody id="company-jobs-table">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="card" id="add-modal">
+        <h2>Objavi novo prosto delo</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Naziv dela</label>
+                <input type="text" id="job-title" placeholder="npr. Prodajalec (m/ž)">
+            </div>
+            <div class="form-group">
+                <label>Urna postavka (€/h neto)</label>
+                <input type="number" step="0.01" id="job-pay" placeholder="7.50">
+            </div>
+            <div class="form-group">
+                <label>Kraj dela</label>
+                <input type="text" id="job-location" placeholder="Velenje">
+            </div>
+            <div class="form-group">
+                <label>Trajanje</label>
+                <input type="text" id="job-duration" placeholder="Dlje časa / Med počitnicami">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Opis dela in pogoji</label>
+            <textarea id="job-desc" rows="4" placeholder="Podrobno opišite delo..."></textarea>
+        </div>
+        <button class="btn-add" onclick="addNewJob()">Objavi oglas</button>
+    </div>
+</div>
+
+<script>
+    // Preverimo če je podjetje prijavljeno
+    document.addEventListener('DOMContentLoaded', () => {
+        const role = localStorage.getItem('user_role');
+        const name = localStorage.getItem('user_name');
+        
+        if (role !== '2') {
+            alert("Dostop dovoljen samo podjetjem!");
+            window.location.href = 'prijava-podjetje.html';
+            return;
+        }
+        document.getElementById('company-name').innerText = name;
+        loadCompanyJobs();
+    });
+
+    async function loadCompanyJobs() {
+        const tableBody = document.getElementById('company-jobs-table');
+        try {
+            const response = await fetch('/api/JobOffer');
+            const jobs = await response.json();
+            
+            // V pravi aplikaciji bi filtrirali po ID-ju podjetja (npr. job.podjetjeId === trenutniId)
+            // Zaenkrat prikažemo vse za test, ali pa simuliramo filter
+            tableBody.innerHTML = '';
+            jobs.forEach(job => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td><strong>${job.ime}</strong></td>
+                        <td>${job.placa.toFixed(2)} €/h</td>
+                        <td>${job.lokacija || 'Slovenija'}</td>
+                        <td><span style="color:green">0</span></td>
+                        <td>
+                            <button class="btn-delete" onclick="deleteJob(${job.id})">Odstrani</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (e) { console.error(e); }
+    }
+
+    async function addNewJob() {
+        const data = {
+            ime: document.getElementById('job-title').value,
+            opis: document.getElementById('job-desc').value,
+            placa: parseFloat(document.getElementById('job-pay').value),
+            lokacija: document.getElementById('job-location').value, // Preveri če tvoj C# model sprejme string ali ID
+            trajanje: document.getElementById('job-duration').value,
+            kraji_id: 1 // Zaenkrat fiksno
+        };
+
+        if(!data.ime || !data.placa) { alert("Izpolnite obvezna polja!"); return; }
+
+        try {
+            const response = await fetch('/api/JobOffer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert("Oglas uspešno objavljen!");
+                location.reload();
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    async function deleteJob(id) {
+        if(!confirm("Ali ste prepričani, da želite izbrisati oglas?")) return;
+
+        try {
+            const response = await fetch(`/api/JobOffer/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert("Oglas izbrisan.");
+                loadCompanyJobs();
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Študentsko delo - Portal</title>
+    <style>
+        :root {
+            --primarna-modra: #1a237e;
+            --poudarek-oranza: #ff6f00;
+            --bg-svetla: #f4f7f6;
+            --text-glavni: #333;
+            --text-meta: #777;
+        }
+
+        body {
+            background-color: var(--bg-svetla);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            color: var(--text-glavni);
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            background-color: white;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.85rem;
+        }
+
+        .container-wide {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-prijava {
+            text-decoration: none;
+            color: white;
+            background-color: var(--primarna-modra);
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 25px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Uporabniški profil v top-baru */
+        .user-logged-in {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            color: var(--primarna-modra);
+        }
+
+        .btn-logout {
+            color: #d32f2f;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-decoration: underline;
+            text-transform: uppercase;
+        }
+
+        /* HEADER */
+        .main-header {
+            background-color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 90px;
+            width: auto;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-glavni);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            border-radius: 25px;
+            text-transform: uppercase;
+        }
+
+        .btn-student { background-color: var(--primarna-modra); }
+        .btn-podjetje { background-color: var(--poudarek-oranza); }
+
+        /* SEARCH SECTION */
+        .search-section {
+            background-color: white;
+            padding: 50px 0;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-section h1 {
+            color: var(--primarna-modra);
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 25px auto;
+            border: 2px solid var(--primarna-modra);
+            border-radius: 40px;
+            display: flex;
+            padding: 5px 5px 5px 20px;
+            background: white;
+        }
+
+        .search-bar input {
+            border: none;
+            flex: 1;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            background: var(--poudarek-oranza);
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* JOB CARDS */
+        .job-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primarna-modra);
+            transition: transform 0.2s;
+        }
+
+        .job-card:hover { transform: translateY(-3px); }
+
+        .job-title { font-size: 1.5rem; margin: 0; color: #111; }
+        .job-location { color: var(--text-meta); font-size: 0.9rem; margin: 5px 0 15px 0; font-weight: bold; }
+        
+        .pay-row { display: flex; align-items: baseline; margin-bottom: 15px; }
+        .pay-neto { font-size: 1.3rem; font-weight: 800; color: var(--primarna-modra); }
+        .pay-bruto { font-size: 0.85rem; color: var(--text-meta); margin-left: 10px; }
+
+        .job-desc { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 20px; }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .meta-info { font-size: 0.85rem; color: var(--text-meta); }
+        .meta-info span { color: #333; font-weight: 600; }
+
+        .btn-more {
+            background: var(--poudarek-oranza);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="container-wide">
+        <div class="contact-info">
+            <span>✉️ pomoc@studentsko-delo.si</span>
+            <span>📞 080 10 20</span>
+        </div>
+        <div class="right-buttons" id="auth-section">
+            <a href="prijava.html" class="btn-prijava">Prijava / Registracija</a>
+        </div>
+    </div>
+</div>
+
+<header class="main-header">
+    <div class="container-wide main-nav">
+        <a href="index.html" class="logo">
+            <img src="/img/logo.png" alt="Logo">
+        </a>
+        
+        <ul class="nav-links">
+            <li><a href="#">Iskalnik del</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Kontakt</a></li>
+        </ul>
+
+        <div class="action-btns">
+            <a href="za-studente.html" class="action-btn btn-student">Za študente</a>
+            <a href="za-podjetje.html" class="action-btn btn-podjetje">Za podjetja</a>
+        </div>
+    </div>
+</header>
+
+<div class="search-section">
+    <div class="container">
+        <h1>Odkrij svojo naslednjo priložnost</h1>
+        <div class="search-bar">
+            <input type="text" id="main-search" placeholder="Išči po nazivu, kraju...">
+            <button onclick="loadJobs()">Išči</button>
+        </div>
+        
+        <div class="filters">
+            <select class="filter-select" id="filter-region" onchange="loadJobs()">
+                <option value="">Vse regije</option>
+                <option value="ljubljana">Ljubljana</option>
+                <option value="maribor">Maribor</option>
+                <option value="obala">Obala</option>
+                <option value="celje">Celje</option>
+            </select>
+            
+            <select class="filter-select" id="filter-type" onchange="loadJobs()">
+                <option value="">Vse vrste dela</option>
+                <option value="prodaja">Prodaja</option>
+                <option value="it">IT</option>
+                <option value="gostinstvo">Gostinstvo</option>
+                <option value="marketing">Marketing</option>
+            </select>
+            
+            <select class="filter-select" id="filter-pay" onchange="loadJobs()">
+                <option value="0">Min. plačilo</option>
+                <option value="7">Nad 7 €/h</option>
+                <option value="9">Nad 9 €/h</option>
+                <option value="11">Nad 11 €/h</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="job-container" id="job-container">
+    </div>
+
+<script>
+    // --- LOGIKA ZA PRIJAVO/ODJAVO ---
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuth();
+        loadJobs();
+    });
+
+    function checkAuth() {
+        const authSection = document.getElementById('auth-section');
+        const isLoggedIn = localStorage.getItem('is_logged_in');
+        const userName = localStorage.getItem('user_name');
+
+        if (isLoggedIn === 'true' && userName) {
+            authSection.innerHTML = `
+                <div class="user-logged-in">
+                    <span> ${userName}</span>
+                    <span class="btn-logout" onclick="logout()">Odjava</span>
+                </div>
+            `;
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.reload();
+    }
+
+    // --- ISKANJE OGLASOV ---
+    async function loadJobs() {
+        const container = document.getElementById('job-container');
+        const iskanjeText = document.getElementById('main-search').value.toLowerCase();
+        const regijaValue = document.getElementById('filter-region').value.toLowerCase();
+        const tipValue = document.getElementById('filter-type').value.toLowerCase();
+        const minPlacaValue = document.getElementById('filter-pay').value;
+        const minPlaca = parseFloat(minPlacaValue) || 0;
+
+        try {
+            container.innerHTML = '<p style="text-align:center;">Nalaganje oglasov...</p>';
+            
+            const response = await fetch('/api/JobOffer'); 
+            const allJobs = await response.json();
+
+            const filteredJobs = allJobs.filter(job => {
+                const ujemajIskanje = job.ime.toLowerCase().includes(iskanjeText) || 
+                                     job.opis.toLowerCase().includes(iskanjeText);
+                
+                const krajIzBaze = (job.lokacija || "").toLowerCase();
+                const ujemajRegijo = regijaValue === "" || krajIzBaze.includes(regijaValue);
+                
+                const ujemajTip = tipValue === "" || 
+                                 job.ime.toLowerCase().includes(tipValue) || 
+                                 job.opis.toLowerCase().includes(tipValue);
+                
+                const ujemajPlaco = job.placa >= minPlaca;
+
+                return ujemajIskanje && ujemajRegijo && ujemajTip && ujemajPlaco;
+            });
+
+            container.innerHTML = '';
+
+            if (filteredJobs.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding: 50px;">Ni najdenih del za izbrane filtre.</p>';
+                return;
+            }
+
+            filteredJobs.forEach(job => {
+                const netoPlaca = job.placa || 0;
+                const bruto = (netoPlaca * 1.15).toFixed(2);
+                
+                const card = document.createElement('div');
+                card.className = 'job-card';
+                
+                const lokacijaPrikaz = job.lokacija ? job.lokacija.toUpperCase() : 'LOKACIJA PO DOGOVORU';
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items: start;">
+                        <div>
+                            <h2 class="job-title">${job.ime}</h2>
+                            <div class="job-location">📍 ${lokacijaPrikaz}</div>
+                        </div>
+                        <span style="cursor:pointer; font-size: 1.2rem;">🧡</span>
+                    </div>
+                    
+                    <div class="pay-row">
+                        <span class="pay-neto">${netoPlaca.toFixed(2)} €/h neto</span>
+                        <span class="pay-bruto">(${bruto} €/h bruto)</span>
+                    </div>
+                    
+                    <p class="job-desc">${job.opis}</p>
+                    
+                    <div class="job-footer">
+                        <div class="meta-info">
+                            Trajanje: <span>${job.trajanje || 'Po dogovoru'}</span> • 
+                            Delovnik: <span>${job.delovnik || 'Po dogovoru'}</span>
+                        </div>
+                        <button class="btn-more">Prikaži podrobnosti</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="text-align:center; color: red;">Napaka pri povezavi s strežnikom.</p>';
+        }
+    }
+</script>
+
+</body>
+</html>

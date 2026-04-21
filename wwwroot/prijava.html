@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava | Študentsko delo</title>
+    <style>
+        :root {
+            --primarna-modra: #1a237e;
+            --poudarek-oranza: #ff6f00;
+            --bg-svetla: ;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-svetla);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .logo-large {
+            height: 100px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primarna-modra);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        p.subtitle {
+            color: #666;
+            margin-bottom: 50px;
+        }
+
+        .selection-cards {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            width: 300px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Specifični stili za kartici */
+        .card.student:hover { border-color: var(--primarna-modra); }
+        .card.company:hover { border-color: var(--poudarek-oranza); }
+
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin: 10px 0;
+            font-size: 1.5rem;
+        }
+
+        .btn-choice {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border-radius: 25px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .student .btn-choice { background-color: var(--primarna-modra); }
+        .company .btn-choice { background-color: var(--poudarek-oranza); }
+
+        .footer-links {
+            margin-top: 40px;
+            color: #888;
+        }
+
+        .footer-links a {
+            color: var(--primarna-modra);
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <img src="/img/logo.png" alt="Logo" class="logo-large">
+    
+    <h1>Pozdravljeni v portalu!</h1>
+    <p class="subtitle">Za nadaljevanje izberite vrsto računa:</p>
+
+    <div class="selection-cards">
+        <div class="card student" onclick="window.location.href='/registracija-student.html'">
+            <div class="icon">🎓</div>
+            <h2>Sem dijak / študent</h2>
+            <p>Iščem delo, želim naročiti napotnico in pregledati zaslužke.</p>
+            <button class="btn-choice">Prijava / Registracija</button>
+        </div>
+
+        <div class="card company" onclick="window.location.href='/registracija-podjetje.html'">
+            <div class="icon">🏢</div>
+            <h2>Sem podjetje</h2>
+            <p>Objavljam prosta dela in iščem nove sodelavce za svojo ekipo.</p>
+            <button class="btn-choice">Prijava / Registracija</button>
+        </div>
+    </div>
+
+    <div class="footer-links">
+        <a href="index.html">← Nazaj na iskalnik del</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava | Študentsko delo</title>
+    <style>
+        :root {
+            --primarna-modra: #1a237e;
+            --poudarek-oranza: #ff6f00;
+            --bg-svetla: #f4f7f6;
+            --text-glavni: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-svetla);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .auth-card {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--primarna-modra);
+            text-align: center;
+        }
+
+        .logo-area img {
+            height: 70px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .tab-wrapper {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #aaa;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--primarna-modra);
+            border-bottom: 3px solid var(--primarna-modra);
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primarna-modra);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background-color: var(--primarna-modra);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d1254;
+        }
+
+        .secondary-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #777;
+            text-decoration: none;
+        }
+
+        #register-form { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="logo-area">
+        <img src="/img/logo.png" onclick="window.location.href='index.html'" alt="Logo">
+    </div>
+
+    <div class="tab-wrapper">
+        <div id="login-tab" class="tab active" onclick="showForm('login')">Prijava</div>
+        <div id="register-tab" class="tab" onclick="showForm('register')">Registracija</div>
+    </div>
+
+    <div id="login-form">
+        <div class="form-group">
+            <label>E-pošta</label>
+            <input type="email" id="login-email" placeholder="vnesi e-pošto...">
+        </div>
+        <div class="form-group">
+            <label>Geslo</label>
+            <input type="password" id="login-password" placeholder="vnesi geslo...">
+        </div>
+        <button class="btn-primary" onclick="loginUser()">Vpiši se</button>
+        <a href="#" class="secondary-link">Pozabljeno geslo?</a>
+    </div>
+
+    <div id="register-form">
+        <div style="display: flex; gap: 10px;">
+            <div class="form-group">
+                <label>Ime</label>
+                <input type="text" id="reg-ime" placeholder="Janez">
+            </div>
+            <div class="form-group">
+                <label>Priimek</label>
+                <input type="text" id="reg-priimek" placeholder="Novak">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Telefon</label>
+            <input type="text" id="reg-telefon" placeholder="041 123 456">
+        </div>
+
+        <div class="form-group">
+            <label>E-pošta</label>
+            <input type="email" id="reg-mail" placeholder="janez@primer.si">
+        </div>
+
+        <div class="form-group">
+            <label>Šola / Fakulteta</label>
+            <input type="text" id="reg-sola" placeholder="npr. Šolski center Velenje">
+        </div>
+
+        <div class="form-group">
+            <label>Geslo</label>
+            <input type="password" id="reg-geslo" placeholder="izberi varno geslo...">
+        </div>
+
+        <div class="form-group">
+            <label>Življenjepis (PDF ali slika)</label>
+            <input type="file" id="reg-cv" accept=".pdf,.jpg,.jpeg,.png">
+        </div>
+
+        <button class="btn-primary" onclick="registerUser()" style="background-color: var(--poudarek-oranza);">Ustvari račun</button>
+    </div>
+
+    <a href="index.html" class="secondary-link">← Nazaj na glavno stran</a>
+</div>
+
+<script>
+    function showForm(type) {
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+
+        if (type === 'login') {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+        } else {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            loginTab.classList.remove('active');
+            registerTab.classList.add('active');
+        }
+    }
+
+    // --- FUNKCIJA ZA PRIJAVO (POPRAVLJENA) ---
+    async function loginUser() {
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-password').value;
+
+        if(!email || !pass) {
+            alert("Vnesi podatke za prijavo.");
+            return;
+        }
+
+        const loginData = {
+            mail: email,
+            geslo: pass
+        };
+
+        try {
+            const response = await fetch('/api/Auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loginData)
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+                
+                // SHRANIMO REALNE PODATKE IZ BAZE
+                localStorage.setItem('user_name', user.ime + " " + user.priimek); 
+                localStorage.setItem('is_logged_in', 'true');
+
+                alert("Pozdravljeni, " + user.ime + "!");
+                window.location.href = 'index.html'; 
+            } else {
+                alert("Napačni prijavni podatki.");
+            }
+        } catch (error) {
+            console.error("Napaka:", error);
+            alert("Povezava s strežnikom ni uspela.");
+        }
+    }
+
+    // --- REGISTRACIJA ---
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    async function registerUser() {
+        const cvFileInput = document.getElementById('reg-cv');
+        let cvBase64 = "";
+
+        if (cvFileInput.files.length > 0) {
+            cvBase64 = await toBase64(cvFileInput.files[0]);
+        }
+
+        const data = {
+            ime: document.getElementById('reg-ime').value,
+            priimek: document.getElementById('reg-priimek').value,
+            telefon: document.getElementById('reg-telefon').value,
+            mail: document.getElementById('reg-mail').value,
+            sola: document.getElementById('reg-sola').value,
+            geslo: document.getElementById('reg-geslo').value,
+            cv: cvBase64,
+            vrste_uporabnikov_id: 1, 
+            kraji_id: 1 
+        };
+
+        if(!data.ime || !data.mail || !data.geslo) {
+            alert("Prosim izpolni vsa obvezna polja.");
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/Auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert("Registracija uspešna!");
+                showForm('login');
+            } else {
+                alert("Napaka pri registraciji.");
+            }
+        } catch (error) {
+            console.error("Napaka:", error);
+            alert("Strežnik ni dosegljiv.");
+        }
+    }
+</script>
+
+</body>
+</html>
