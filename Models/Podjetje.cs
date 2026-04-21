@@ -8,4 +8,5 @@ public class Podjetje
     public string? spletna_stran { get; set; }
     public string geslo { get; set; } = string.Empty; 
     public int kraji_id { get; set; }
+    public int vrsta_uporabnika_id { get; set; } = 2;
 }
