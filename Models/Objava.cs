@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema; // <--- DODAJ TOLE
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Studentski_servis.Models;
 
-[Table("objave")] // <--- IN TOLE (pove programu, naj išče malo tabelo 'objave')
+[Table("objave")]
 public class Objava
 {
     [Key]
