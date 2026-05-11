@@ -96,25 +96,15 @@ http://localhost:5052/admin-prijava.html
 
 ## Zaslonske slike
 
-![Glavna stran](Docs/screenshots/glavna-stran.svg)
+![Glavna stran](Docs/screenshots/glavna.png)
 
-![Prijava](Docs/screenshots/prijava.svg)
+![Prijava](Docs/screenshots/prijava.png)
 
-![Admin prijava](Docs/screenshots/admin-prijava.svg)
-
-## Dokumentacija
-
-Projektna dokumentacija je v mapi `Docs`:
-
-```text
-Docs/dokumentacija.pdf
-Docs/dokumentacija.md
-Docs/er-model.svg
-```
+![Admin prijava](Docs/screenshots/admin.png)
 
 ## Projektno vodenje
 
-Trello tabla: povezavo do svoje Trello table prilepi tukaj pred oddajo.
+Trello tabla: https://trello.com/invite/b/699418d140e7886cb9aa54ee/ATTIa93712659a93b3a8367a324baa070af4C7DD6197/my-trello-board
 
 Tabla mora vsebovati stolpce `To-Do`, `Doing` in `Done`. Vsaka kartica naj bo zapisana kot uporabniska zgodba in dodeljena odgovorni osebi.
 
